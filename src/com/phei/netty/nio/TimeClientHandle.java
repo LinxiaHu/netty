@@ -67,7 +67,7 @@ public class TimeClientHandle implements Runnable {
 		}
 		while (!stop) {
 			try {
-				selector.select(1000);
+				int num = selector.select(1000);
 				Set<SelectionKey> selectedKeys = selector.selectedKeys();
 				Iterator<SelectionKey> it = selectedKeys.iterator();
 				SelectionKey key = null;
@@ -88,7 +88,7 @@ public class TimeClientHandle implements Runnable {
 				e.printStackTrace();
 				System.exit(1);
 			}
-		}
+		}// while (!stop)
 
 		// 多路复用器关闭后，所有注册在上面的Channel和Pipe等资源都会被自动去注册并关闭，所以不需要重复释放资源
 		if (selector != null)
@@ -98,7 +98,7 @@ public class TimeClientHandle implements Runnable {
 				e.printStackTrace();
 			}
 
-	}
+	}// run()
 
 	private void handleInput(SelectionKey key) throws IOException {
 
@@ -108,6 +108,7 @@ public class TimeClientHandle implements Runnable {
 			if (key.isConnectable()) {
 				if (sc.finishConnect()) {
 					sc.register(selector, SelectionKey.OP_READ);
+					System.out.println("客户端开始发送数据");
 					doWrite(sc);
 				} else
 					System.exit(1);// 连接失败，进程退出
@@ -121,7 +122,13 @@ public class TimeClientHandle implements Runnable {
 					readBuffer.get(bytes);
 					String body = new String(bytes, "UTF-8");
 					System.out.println("Now is : " + body);
-					this.stop = true;
+					try {
+						Thread.sleep(5000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					doWrite(sc); // 隔一段时间再请求服务器（由上面的sleep事件决定）
+//					this.stop = true;
 				} else if (readBytes < 0) {
 					// 对端链路关闭
 					key.cancel();
@@ -140,7 +147,7 @@ public class TimeClientHandle implements Runnable {
 			System.out.println(Thread.currentThread().getName() + "开始向服务器发送请求");
 			doWrite(socketChannel);
 		} else
-			socketChannel.register(selector, SelectionKey.OP_CONNECT);
+			socketChannel.register(selector, SelectionKey.OP_CONNECT); // 对应于服务器端的accpet()操作
 	}
 
 	private void doWrite(SocketChannel sc) throws IOException {
