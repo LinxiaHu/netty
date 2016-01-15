@@ -37,6 +37,8 @@ public class MultiplexerTimeServer implements Runnable {
 	private ServerSocketChannel servChannel;
 
 	private volatile boolean stop;
+	
+	private static int COUNT = 0;
 
 	/**
 	 * 初始化多路复用器、绑定监听端口
@@ -70,7 +72,8 @@ public class MultiplexerTimeServer implements Runnable {
 	public void run() {
 		while (!stop) {
 			try {
-				selector.select(1000);
+				int num = selector.select(1000);
+				System.out.println("事件有：" + num + "个");
 				Set<SelectionKey> selectedKeys = selector.selectedKeys();
 				Iterator<SelectionKey> it = selectedKeys.iterator();
 				SelectionKey key = null;
@@ -78,7 +81,7 @@ public class MultiplexerTimeServer implements Runnable {
 					key = it.next();
 					it.remove();
 					try {
-						handleInput(key);
+						handleInput(key);// 处理一个key
 					} catch (Exception e) {
 						if (key != null) {
 							key.cancel();
@@ -110,6 +113,8 @@ public class MultiplexerTimeServer implements Runnable {
 				ServerSocketChannel ssc = (ServerSocketChannel) key.channel();
 				SocketChannel sc = ssc.accept();
 				sc.configureBlocking(false);
+				COUNT++;
+				System.out.println("接收了一个新请求，累计接收了：" + COUNT + "个");
 				// Add the new connection to the selector
 				sc.register(selector, SelectionKey.OP_READ);
 			}
@@ -129,6 +134,11 @@ public class MultiplexerTimeServer implements Runnable {
 							.equalsIgnoreCase(body) ? new java.util.Date(
 							System.currentTimeMillis()).toString()
 							: "BAD ORDER";
+					try {
+						Thread.sleep(5000);// 模拟处理时间
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 					doWrite(sc, currentTime);
 				} else if (readBytes < 0) {
 					// 对端链路关闭

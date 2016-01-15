@@ -137,6 +137,7 @@ public class TimeClientHandle implements Runnable {
 		// 如果直接连接成功，则注册到多路复用器上，发送请求消息，读应答
 		if (socketChannel.connect(new InetSocketAddress(host, port))) {
 			socketChannel.register(selector, SelectionKey.OP_READ);
+			System.out.println(Thread.currentThread().getName() + "开始向服务器发送请求");
 			doWrite(socketChannel);
 		} else
 			socketChannel.register(selector, SelectionKey.OP_CONNECT);
@@ -149,7 +150,7 @@ public class TimeClientHandle implements Runnable {
 		writeBuffer.flip();
 		sc.write(writeBuffer);
 		if (!writeBuffer.hasRemaining())
-			System.out.println("Send order 2 server succeed.");
+			System.out.println(Thread.currentThread().getName() + "向服务器发送请求成功");
 	}
 
 }

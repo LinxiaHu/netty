@@ -42,7 +42,7 @@ public class NettyMessageDecoder extends LengthFieldBasedFrameDecoder {
 	}
 
 	@Override
-	protected Object decode(ChannelHandlerContext ctx, ByteBuf in)
+	protected Object decode(ChannelHandlerContext ctx, ByteBuf in) //in是消息经过encode（）后的结果
 			throws Exception {
 		ByteBuf frame = (ByteBuf) super.decode(ctx, in);
 		if (frame == null) {
