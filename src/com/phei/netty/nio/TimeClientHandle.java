@@ -108,7 +108,7 @@ public class TimeClientHandle implements Runnable {
 			if (key.isConnectable()) {
 				if (sc.finishConnect()) {
 					sc.register(selector, SelectionKey.OP_READ);
-					System.out.println("客户端开始发送数据");
+					System.out.println("客户端在handleInput中注册OP_READ并开始发送数据");
 					doWrite(sc);
 				} else
 					System.exit(1);// 连接失败，进程退出
@@ -144,9 +144,10 @@ public class TimeClientHandle implements Runnable {
 		// 如果直接连接成功，则注册到多路复用器上，发送请求消息，读应答
 		if (socketChannel.connect(new InetSocketAddress(host, port))) {
 			socketChannel.register(selector, SelectionKey.OP_READ);
-			System.out.println(Thread.currentThread().getName() + "开始向服务器发送请求");
+			System.out.println("客户端在doConnect中注册OP_READ并开始向服务器发送数据");
 			doWrite(socketChannel);
 		} else
+			System.out.println("客户端在doConnect注册OP_CONNECT");
 			socketChannel.register(selector, SelectionKey.OP_CONNECT); // 对应于服务器端的accpet()操作
 	}
 
