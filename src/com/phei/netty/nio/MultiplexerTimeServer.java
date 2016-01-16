@@ -83,6 +83,8 @@ public class MultiplexerTimeServer implements Runnable {
 					key = it.next();
 					it.remove();
 					try {
+						Object obj = key.attachment();// 需要在register为OP_READ时加上第三个参数作为attachment
+						System.out.println("服务器调用handleInput(key)之前SelectionKey的attachment()：" + obj);
 						handleInput(key);// 处理一个key
 					} catch (Exception e) {
 						if (key != null) {
