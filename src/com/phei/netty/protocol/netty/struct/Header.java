@@ -19,9 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author Lilinfeng
- * @date 2014年3月14日
- * @version 1.0
+ * 私有化协议——数据结构定义
+ * 可以用于RPC通信的框架
  */
 public final class Header {
 
