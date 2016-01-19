@@ -24,9 +24,7 @@ import org.jboss.marshalling.ByteInput;
 import org.jboss.marshalling.Unmarshaller;
 
 /**
- * @author Lilinfeng
- * @date 2014年3月14日
- * @version 1.0
+ * 这是JBoss的开源项目，同样用于对象的序列化
  */
 public class MarshallingDecoder {
 
