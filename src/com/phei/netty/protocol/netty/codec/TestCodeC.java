@@ -88,7 +88,8 @@ public class TestCodeC {
 		sendBuf.setInt(4, sendBuf.readableBytes());
 		return sendBuf;
 	}
-
+	
+	// 解码：将字节数组解码成pojo
 	public NettyMessage decode(ByteBuf in) throws Exception {
 		NettyMessage message = new NettyMessage();
 		Header header = new Header();

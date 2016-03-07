@@ -15,6 +15,9 @@
  */
 package com.phei.netty.protocol.netty.server;
 
+import org.apache.bcel.verifier.exc.StaticCodeConstraintException;
+import org.omg.CORBA.PUBLIC_MEMBER;
+
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -31,7 +34,7 @@ public class HeartBeatRespHandler extends ChannelHandlerAdapter {
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg)
 			throws Exception {
-		NettyMessage message = (NettyMessage) msg; // 从client发送过来的信息
+		NettyMessage message = (NettyMessage) msg; // 从client发送过来的信息,已经经过编解码
 		// 返回心跳应答消息
 		if (message.getHeader() != null
 				&& message.getHeader().getType() == MessageType.HEARTBEAT_REQ
@@ -54,5 +57,4 @@ public class HeartBeatRespHandler extends ChannelHandlerAdapter {
 		message.setHeader(header);
 		return message;
 	}
-
 }
